@@ -1,0 +1,6 @@
+Running
+Idle
+Running
+Fault
+Fault
+Idle

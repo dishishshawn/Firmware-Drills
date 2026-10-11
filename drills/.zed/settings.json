@@ -1,0 +1,19 @@
+// Practice mode for the drills folder: no autocomplete, no live error squiggles,
+// no AI edit predictions, no auto-closed brackets. Find mistakes by compiling.
+// To get the help back here, set enable_language_server to true (or delete this file).
+{
+  "show_completions_on_input": false,
+  "show_edit_predictions": false,
+  "use_autoclose": false,
+  "auto_signature_help": false,
+  "inlay_hints": { "enabled": false },
+  "format_on_save": "off",
+  "tab_size": 4,
+  "languages": {
+    "C++": {
+      "enable_language_server": false,
+      "format_on_save": "off",
+      "tab_size": 4
+    }
+  }
+}

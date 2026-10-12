@@ -1,6 +1,6 @@
-// Practice mode for the drills folder: no autocomplete, no live error squiggles,
-// no AI edit predictions, no auto-closed brackets. Find mistakes by compiling.
-// To get the help back here, set enable_language_server to true (or delete this file).
+// Practice mode for the drills folder: no autocomplete, no AI edit predictions, no
+// auto-closed brackets. Error squiggles stay on (clangd reads compile_flags.txt).
+// To get the rest of the help back, delete this file.
 {
   "show_completions_on_input": false,
   "show_edit_predictions": false,
@@ -11,7 +11,7 @@
   "tab_size": 4,
   "languages": {
     "C++": {
-      "enable_language_server": false,
+      "enable_language_server": true,
       "format_on_save": "off",
       "tab_size": 4
     }

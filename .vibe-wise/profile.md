@@ -33,6 +33,10 @@ No demonstrated understanding recorded yet.
 ## Developing Concepts
 
 - Caller-driven objects and per-object state (drill 23): explained it in their own words after reading the finished code; not yet applied in code they wrote.
+- Pass by value vs by reference (drill 30): wrote Led& for functions that change the struct and const Led& for read-only, after tracing the copy. Applied in their own code; all tests pass.
+- Member functions use the object's own state, and const member functions (drill 31): wrote PulseCounter with no parameters, private total, count() const; all tests pass.
+- Pointers to structs and const-correct returns (drill 32): free function over an array of structs, size_t indexes, returns const Reading* or nullptr; all tests pass, no warnings. Needed two explanations for the return type.
+- Constructors and private invariants (drill 33): constructor sets members, setDuty clamps into a private member, const getters, uint64_t widening against overflow; all tests pass. Still assigns in the body rather than an initializer list. If/else chaining needed a trace; fixed with early returns.
 
 ## Revisit
 

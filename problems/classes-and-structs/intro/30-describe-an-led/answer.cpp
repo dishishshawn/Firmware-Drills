@@ -1,4 +1,5 @@
-// 30  Describe an LED  [INTRO] [STRUCT]
+// 30  Describe an
+// LED  [INTRO] [STRUCT]
 // Structs, embedded, target 5 min. Unit tests call the names below.
 //
 // A struct bundles related values into one type. A board has several LEDs, and each one
@@ -23,7 +24,21 @@
 // Run the "drill: run tests" task with this file open (alt-shift-t picks a task, alt-t reruns it).
 // --------------------------------------------------------------------------------------
 
+#include <cstdint>
+
 struct Led {
     uint8_t pin;
-    bool on;
+    bool on = false;
 };
+
+void turnOn(Led& led) {
+    led.on = true;
+}
+
+void toggle(Led& led) {
+    led.on = !led.on;
+}
+
+bool isLit(const Led& led) {
+    return led.on;
+}

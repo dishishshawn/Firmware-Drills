@@ -24,3 +24,29 @@
 //
 // Run the "drill: run tests" task with this file open (alt-shift-t picks a task, alt-t reruns it).
 // --------------------------------------------------------------------------------------
+
+#include <cstdint>
+#include <cstddef>
+
+struct Reading {
+
+    uint8_t sensorId;
+    uint16_t raw;
+    uint32_t tick;
+
+    double celsius() const {
+        return (double)raw * 0.1 - 50.0;
+    };
+};
+
+const Reading* hottest(const Reading* readings, size_t length) {
+
+    if(length == 0) { return nullptr; }
+
+    uint16_t hottest = 0;
+    size_t index = 0;
+    for (size_t i = 0; i < length; i++) {
+        if(readings[i].raw > hottest) { hottest = readings[i].raw; index = i; }
+    }
+    return &readings[index];
+}

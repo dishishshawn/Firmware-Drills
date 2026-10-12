@@ -25,7 +25,7 @@ bash .tools/run-tests.sh problems/cpp-core/easy/01-swap-and-reverse-with-pointer
    **drill: compile only** checks syntax without running anything.
 4. Errors print as `answer.cpp:line:col`. Ctrl-click one in the terminal to jump there.
 
-Practice mode is on in this repo (`.zed/settings.json`): no autocomplete, no live error squiggles, no AI suggestions, no auto-closed brackets.
+Practice mode is on in this repo (`.zed/settings.json`): no autocomplete, no AI suggestions, no auto-closed brackets. Error squiggles are on.
 Tests are built with AddressSanitizer and UBSan when your g++ has them, so bad pointers and overflows crash with a report instead of passing by luck.
 Exceptions are off (`-fno-exceptions`), like many embedded builds.
 

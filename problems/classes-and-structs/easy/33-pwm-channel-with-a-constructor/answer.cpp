@@ -28,3 +28,42 @@
 //
 // Run the "drill: run tests" task with this file open (alt-shift-t picks a task, alt-t reruns it).
 // --------------------------------------------------------------------------------------
+
+#include <cstdint>
+
+class PwmChannel {
+    public:
+        // Constructor (Same name as class, runs whenever class object is created)
+        PwmChannel(uint32_t counts) {
+            // Default to 0% duty
+            // High for counts * duty
+            // Low for rest
+            // compare = the count whenever switch to low
+            period = counts;
+            percent = 0;
+        }
+
+        void setDuty(int passedPercent) {
+            if (passedPercent > 100) {
+                percent = 100;
+                return;
+            }
+            if (passedPercent < 0) {
+                percent = 0;
+                return;
+            }
+            else {
+                percent = passedPercent;
+            }
+        }
+
+        int duty() const{
+            return percent;
+        }
+
+        uint32_t compare() const { return (uint32_t)((uint64_t)period * duty() / 100); };
+
+    private:
+        uint32_t period;
+        int percent;
+};

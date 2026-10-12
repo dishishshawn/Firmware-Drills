@@ -22,3 +22,25 @@
 //
 // Run the "drill: run tests" task with this file open (alt-shift-t picks a task, alt-t reruns it).
 // --------------------------------------------------------------------------------------
+
+#include <cstdint>
+
+class PulseCounter {
+
+  uint32_t total = 0;
+
+  public:
+
+      void pulse() {
+          total++;
+      }
+
+      uint32_t count() const {
+          return total;
+      }
+
+      void reset() {
+          total = 0;
+      }
+
+};

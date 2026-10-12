@@ -17,7 +17,7 @@
 - `problems/<topic>/<level>/<NN-name>/tests.cpp` or `expected.txt`: unit tests, or the expected output
 - `.tools/run-tests.sh`: compiles and runs one drill
 - `.zed/tasks.json`: "drill: run tests" and "drill: compile only" tasks
-- `.zed/settings.json`: practice mode (no autocomplete, LSP or AI suggestions)
+- `.zed/settings.json`: practice mode (no autocomplete or AI suggestions; clangd squiggles on)
 - `solutions.md`: reference solutions (not to be shown unless asked)
 
 ## Main Flow

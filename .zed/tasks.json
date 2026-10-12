@@ -5,7 +5,7 @@
   },
   {
     "label": "drill: run tests",
-    "command": "bash \"$ZED_DIRNAME/../../.tools/run-tests.sh\" \"$ZED_DIRNAME\"",
+    "command": "bash \"$ZED_WORKTREE_ROOT/.tools/run-tests.sh\" \"$ZED_DIRNAME\"",
     "reveal": "always",
     "allow_concurrent_runs": false,
     "use_new_terminal": false

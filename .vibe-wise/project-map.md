@@ -2,19 +2,19 @@
 
 ## Purpose
 
-29 interview-style C++ drills (embedded, RTOS, core C++), each with tests, run with the local g++.
+39 interview-style C++ drills (embedded, RTOS, core C++, plus a classes-and-structs ladder 30-39 from intro to hard), each with tests, run with the local g++.
 
 ## Requirements
 
-- Each drill: write code below the problem comment in `problems/<NN-name>/answer.cpp`.
+- Each drill: write code below the problem comment in `problems/<topic>/<level>/<NN-name>/answer.cpp`.
 - Tests call the names the problem comment specifies.
 - Exceptions are off (`-fno-exceptions`); C++17.
 - RTOS drills model scheduler/semaphores/queues/timers as plain data structures, without threads.
 
 ## Components
 
-- `problems/<NN-name>/answer.cpp`: the problem statement and the learner's code
-- `problems/<NN-name>/tests.cpp` or `expected.txt`: unit tests, or the expected output
+- `problems/<topic>/<level>/<NN-name>/answer.cpp`: the problem statement and the learner's code
+- `problems/<topic>/<level>/<NN-name>/tests.cpp` or `expected.txt`: unit tests, or the expected output
 - `.tools/run-tests.sh`: compiles and runs one drill
 - `.zed/tasks.json`: "drill: run tests" and "drill: compile only" tasks
 - `.zed/settings.json`: practice mode (no autocomplete, LSP or AI suggestions)
@@ -32,7 +32,7 @@ Local only. No external services.
 
 ## Build and Deployment
 
-- `bash .tools/run-tests.sh problems/<NN-name>` (verified in the script)
+- `bash .tools/run-tests.sh problems/<topic>/<level>/<NN-name>` (verified in the script)
 - Zed: alt-shift-t picks "drill: run tests", alt-t reruns it
 
 ## Unknowns

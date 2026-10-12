@@ -824,3 +824,323 @@ private:
     size_t count_ = 0;
 };
 ```
+
+## 30 Describe an LED
+
+```cpp
+#include <cstdint>
+
+struct Led {
+    uint8_t pin;
+    bool on = false;
+};
+
+void turnOn(Led& led) { led.on = true; }
+
+void toggle(Led& led) { led.on = !led.on; }
+
+bool isLit(const Led& led) { return led.on; }
+```
+
+## 31 Count encoder pulses
+
+```cpp
+#include <cstdint>
+
+class PulseCounter {
+public:
+    void pulse() { ++count_; }
+    uint32_t count() const { return count_; }
+    void reset() { count_ = 0; }
+
+private:
+    uint32_t count_ = 0;
+};
+```
+
+## 32 Find the hottest reading
+
+```cpp
+#include <cstddef>
+#include <cstdint>
+
+struct Reading {
+    uint8_t sensorId;
+    uint16_t raw;
+    uint32_t tick;
+
+    double celsius() const { return raw * 0.1 - 50.0; }
+};
+
+const Reading* hottest(const Reading* readings, size_t len) {
+    if (len == 0) return nullptr;
+    const Reading* best = &readings[0];
+    for (size_t i = 1; i < len; ++i) {
+        if (readings[i].raw > best->raw) best = &readings[i];
+    }
+    return best;
+}
+```
+
+## 33 PWM channel with a constructor
+
+```cpp
+#include <cstdint>
+
+class PwmChannel {
+public:
+    PwmChannel(uint32_t period) : period_(period) {}
+
+    void setDuty(int percent) {
+        if (percent < 0) percent = 0;
+        if (percent > 100) percent = 100;
+        duty_ = percent;
+    }
+
+    int duty() const { return duty_; }
+
+    uint32_t compare() const {
+        return static_cast<uint32_t>(static_cast<uint64_t>(period_) * duty_ / 100);
+    }
+
+private:
+    uint32_t period_;
+    int duty_ = 0;
+};
+```
+
+## 34 Wake delayed tasks
+
+```cpp
+#include <cstddef>
+#include <cstdint>
+
+enum class TaskState { Ready, Blocked, Suspended };
+
+struct Tcb {
+    int id;
+    uint8_t priority;
+    TaskState state = TaskState::Ready;
+    uint32_t wakeTick = 0;
+};
+
+void delayTask(Tcb& task, uint32_t now, uint32_t ticks) {
+    task.state = TaskState::Blocked;
+    task.wakeTick = now + ticks;
+}
+
+size_t wakeDue(Tcb* tasks, size_t len, uint32_t now) {
+    size_t woken = 0;
+    for (size_t i = 0; i < len; ++i) {
+        Tcb& t = tasks[i];
+        if (t.state == TaskState::Blocked && static_cast<int32_t>(now - t.wakeTick) >= 0) {
+            t.state = TaskState::Ready;
+            ++woken;
+        }
+    }
+    return woken;
+}
+```
+
+## 35 Task watchdog
+
+```cpp
+#include <cstddef>
+#include <cstdint>
+
+class TaskWatchdog {
+public:
+    int add(uint32_t timeout) {
+        if (count_ == kMaxTasks) return -1;
+        tasks_[count_] = {timeout, timeout};
+        return static_cast<int>(count_++);
+    }
+
+    void checkIn(int slot) {
+        if (slot < 0 || static_cast<size_t>(slot) >= count_) return;
+        tasks_[slot].remaining = tasks_[slot].timeout;
+    }
+
+    int tick() {
+        int expired = -1;
+        for (size_t i = 0; i < count_; ++i) {
+            if (tasks_[i].remaining > 0) --tasks_[i].remaining;
+            if (tasks_[i].remaining == 0 && expired == -1) expired = static_cast<int>(i);
+        }
+        return expired;
+    }
+
+private:
+    struct Task {
+        uint32_t timeout;
+        uint32_t remaining;
+    };
+    static constexpr size_t kMaxTasks = 4;
+    Task tasks_[kMaxTasks] = {};
+    size_t count_ = 0;
+};
+```
+
+## 36 UART driver over a register struct
+
+```cpp
+#include <cstdint>
+
+struct UartRegs {
+    volatile uint32_t SR;
+    volatile uint32_t DR;
+    volatile uint32_t BRR;
+    volatile uint32_t CR1;
+};
+
+class Uart {
+public:
+    explicit Uart(UartRegs& regs) : regs_(regs) {}
+
+    void init(uint32_t clock, uint32_t baud) {
+        regs_.BRR = (clock + baud / 2) / baud;
+        regs_.CR1 = kUe | kTe | kRe;
+    }
+
+    bool write(uint8_t byte) {
+        if (!(regs_.SR & kTxe)) return false;
+        regs_.DR = byte;
+        return true;
+    }
+
+    bool read(uint8_t& byte) {
+        if (!(regs_.SR & kRxne)) return false;
+        byte = static_cast<uint8_t>(regs_.DR & 0xFFu);
+        return true;
+    }
+
+private:
+    static constexpr uint32_t kRe = 1u << 2;
+    static constexpr uint32_t kTe = 1u << 3;
+    static constexpr uint32_t kRxne = 1u << 5;
+    static constexpr uint32_t kTxe = 1u << 7;
+    static constexpr uint32_t kUe = 1u << 13;
+    UartRegs& regs_;
+};
+```
+
+## 37 Critical section guard
+
+Below the given hardware code.
+
+```cpp
+class CriticalSection {
+public:
+    CriticalSection() : wasEnabled_(irqSave()) {}
+    ~CriticalSection() { irqRestore(wasEnabled_); }
+
+    CriticalSection(const CriticalSection&) = delete;
+    CriticalSection& operator=(const CriticalSection&) = delete;
+
+private:
+    bool wasEnabled_;
+};
+
+bool claimSlot(uint32_t& used, uint32_t limit) {
+    CriticalSection cs;
+    if (used >= limit) return false;
+    ++used;
+    return true;
+}
+```
+
+## 38 Typed mailbox
+
+```cpp
+#include <cstddef>
+
+template <typename T, size_t N>
+class Mailbox {
+public:
+    bool send(const T& msg) {
+        if (count_ == N) return false;
+        slots_[(head_ + count_) % N] = msg;
+        ++count_;
+        return true;
+    }
+
+    bool receive(T& out) {
+        if (count_ == 0) return false;
+        out = slots_[head_];
+        head_ = (head_ + 1) % N;
+        --count_;
+        return true;
+    }
+
+    const T* peek() const { return count_ == 0 ? nullptr : &slots_[head_]; }
+    size_t size() const { return count_; }
+    bool empty() const { return count_ == 0; }
+    bool full() const { return count_ == N; }
+
+private:
+    T slots_[N] = {};
+    size_t head_ = 0;
+    size_t count_ = 0;
+};
+```
+
+## 39 Timer service with callbacks
+
+```cpp
+#include <cstddef>
+#include <cstdint>
+
+using TimerCallback = void (*)(void* context);
+
+class TimerService {
+public:
+    int create(uint32_t period, bool repeat, TimerCallback callback, void* context) {
+        for (size_t i = 0; i < kMaxTimers; ++i) {
+            if (!timers_[i].inUse) {
+                timers_[i] = {period, period, repeat, true, callback, context};
+                return static_cast<int>(i);
+            }
+        }
+        return -1;
+    }
+
+    bool cancel(int handle) {
+        if (handle < 0 || handle >= static_cast<int>(kMaxTimers)) return false;
+        if (!timers_[handle].inUse) return false;
+        timers_[handle].inUse = false;
+        return true;
+    }
+
+    size_t tick() {
+        size_t fired = 0;
+        for (size_t i = 0; i < kMaxTimers; ++i) {
+            Timer& t = timers_[i];
+            if (!t.inUse || --t.remaining != 0) continue;
+            // Update the slot before the callback, so a callback that cancels it has the last word.
+            t.remaining = t.period;
+            if (!t.repeat) t.inUse = false;
+            t.callback(t.context);
+            ++fired;
+        }
+        return fired;
+    }
+
+    size_t active() const {
+        size_t n = 0;
+        for (const Timer& t : timers_) n += t.inUse ? 1 : 0;
+        return n;
+    }
+
+private:
+    struct Timer {
+        uint32_t period;
+        uint32_t remaining;
+        bool repeat;
+        bool inUse;
+        TimerCallback callback;
+        void* context;
+    };
+    static constexpr size_t kMaxTimers = 8;
+    Timer timers_[kMaxTimers] = {};
+};
+```

@@ -1,6 +1,6 @@
 # Firmware Drills
 
-29 interview-style C++ problems with real tests, compiled by your own g++: embedded, RTOS and core C++, each labeled easy or medium.
+39 interview-style C++ problems with real tests, compiled by your own g++: embedded, RTOS and core C++, each labeled intro, easy, medium or hard.
 
 ## On a new device
 
@@ -9,7 +9,7 @@ Needs `git`, `bash` and `g++` (or clang as `CXX=clang++`).
 ```sh
 git clone https://github.com/dishishshawn/Firmware-Drills.git
 cd Firmware-Drills
-bash .tools/run-tests.sh problems/01-swap-and-reverse-with-pointers
+bash .tools/run-tests.sh problems/cpp-core/easy/01-swap-and-reverse-with-pointers
 ```
 
 - Linux: `sudo apt install g++` if missing.
@@ -19,7 +19,7 @@ bash .tools/run-tests.sh problems/01-swap-and-reverse-with-pointers
 
 ## How to use
 
-1. Open the repo in Zed: `zed .` from the repo root. No Zed? Run `bash .tools/run-tests.sh problems/<NN-name>` in any terminal.
+1. Open the repo in Zed: `zed .` from the repo root. No Zed? Run `bash .tools/run-tests.sh problems/<topic>/<level>/<NN-name>` in any terminal.
 2. Open a problem's `answer.cpp`. The problem is in the comment at the top; write your code below it.
 3. Run the task **drill: run tests**: `alt-shift-t` to pick it, then `alt-t` to rerun it after each change.
    **drill: compile only** checks syntax without running anything.
@@ -43,6 +43,8 @@ git add -A && git commit -m "drill 24" && git push   # when you stop
 ```
 
 ## Problems
+
+Folders are `problems/<topic>/<level>/<NN-name>`: topics `embedded`, `rtos`, `cpp-core` and `classes-and-structs`; levels `intro`, `easy`, `medium` and `hard`. Numbers stay global, so drill 23 is `problems/rtos/easy/23-software-timer`.
 
 Labels are in each folder's first comment line too, for example `[MEDIUM] [RTOS]`. RTOS problems model the scheduler, semaphores, queues and timers as plain data structures, so no threads are needed.
 
@@ -89,3 +91,20 @@ Labels are in each folder's first comment line too, for example `[MEDIUM] [RTOS]
 | 12 | Parse a key=value line | medium | unit tests |
 | 14 | Sensor class hierarchy | medium | unit tests |
 | 15 | Owning buffer with RAII | medium | output |
+
+### Classes and structs
+
+A ladder from intro to hard, all embedded or RTOS flavored. Do them in order: each one uses what the one before it taught.
+
+| # | Problem | Level | Uses | Area | Checks |
+|---|---|---|---|---|---|
+| 30 | Describe an LED | intro | struct | embedded | unit tests |
+| 31 | Count encoder pulses | intro | class | embedded | unit tests |
+| 32 | Find the hottest reading | easy | struct with a member function | embedded | unit tests |
+| 33 | PWM channel with a constructor | easy | class with a constructor | embedded | unit tests |
+| 34 | Wake delayed tasks | medium | struct and enum class | RTOS | unit tests |
+| 35 | Task watchdog | medium | class holding an array of structs | RTOS | unit tests |
+| 36 | UART driver over a register struct | medium | register struct and driver class | embedded | unit tests |
+| 37 | Critical section guard | hard | RAII, destructor, deleted copy | RTOS | unit tests |
+| 38 | Typed mailbox | hard | class template | RTOS | unit tests |
+| 39 | Timer service with callbacks | hard | function pointers in a struct array | RTOS | unit tests |
